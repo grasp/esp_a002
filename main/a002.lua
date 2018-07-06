@@ -3,6 +3,7 @@ require "check_ip"
 require "activate_bear"
 require "temp_humi"
 require "http_data"
+require "http_response"
 
 debug_flag=true
 nbiot_registed=false
@@ -13,6 +14,7 @@ device_state={
  ["attached"]=false,
  ["debug_flag"]=true,
  ["ip_checked"]=false,
+ ["http_read"]=false,
  ["ip_addr"]=""
 }
 
@@ -34,13 +36,22 @@ function a002_main()
       --will run each at command in that file per this timer
       activate_bearer_body(device_state)
 
+    elseif device_state.http_read==true then
+
+      device_state.http_read=false
+      http_response_body()
+    --  tmr.interval(0,8000)
+
     elseif string.len(device_state.ip_addr)>0 then
       --uart.alt(0)
-    --  print(device_state.ip_addr)
+      --  print(device_state.ip_addr)
       temp,humi=read_dht()
-      tmr.interval(0,10000)
+      
       --print(temp,humi)
-     http_request_body(device_state,temp,humi)
+       http_request_body(device_state,temp,humi)
+       tmr.interval(0,10000)
+       --device_state.http_read=true
+
         --print("I am prepare for http")
         -- read dht
         -- http send data
@@ -54,4 +65,4 @@ function a002_main()
 end
 
 
---a002_main()
+a002_main()

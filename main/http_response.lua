@@ -1,32 +1,27 @@
 require "led"
 readed=false
-count=1
-echo_data={}
 
-gpio_init()
-tmr.alarm(0,2000,1,function()
+
+
+
+function http_response_body()
+
   uart.alt(1)
   uart.setup(0, 115200, 8, 0, 1,0)
   led2_flash1()
-  count=count+1
-
-  if readed==false then
-    uart.write(0,"AT+HTTPREAD".."\r")
-  end
+  echo_data={}
+  uart.write(0,"AT+HTTPREAD".."\r")
 
   uart.on("data",'\r',function(data)
-    led1_flash1()
     table.insert(echo_data,data)
-    if string.find(data,"OK") or count==5 then
-      readed=true
+    if string.find(data,"OK") then
+      tmr.delay(100*1000)
       uart.alt(0)
       for i,v in ipairs(echo_data) do
         print(i,v)
       end
-      tmr.stop(0)
+       uart.alt(1)
     end
 
   end,0)
-
-
-end)
+end

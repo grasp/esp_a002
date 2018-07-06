@@ -35,27 +35,32 @@ end
 -- single read temp and humi
 function read_dht()
   local read_succ = 0
+   uart.alt(0)
   --tmr.alarm(3, 2000, 1, function()
-    status, temp, humi, temp_dec, humi_dec = dht.read(4)
+    status, temp, humi, temp_dec, humi_dec = dht.readxx(4)
     --sec_time,msec_time = rtctime.get()
     sec_time,msec_time = tmr.time()
     if status == dht.OK then
-      --print(rtctime.get())
-      --print(string.format("DHT Temperature:%d.%03d;Humidity:%d.%03d\r\n",
-      --math.floor(temp),
-      --temp_dec,
-      --math.floor(humi),
-      --humi_dec))
+      print(rtctime.get())
+      print(string.format("DHT Temperature:%d.%03d;Humidity:%d.%03d\r\n",
+      math.floor(temp),
+      temp_dec,
+      math.floor(humi),
+      humi_dec))
       record_counter.correct=record_counter.correct+1
+       uart.alt(1)
       return temp,humi
       elseif status == dht.ERROR_CHECKSUM then
+        print("dht.ERROR_CHECKSUM")
         record_counter.checksum=record_counter.checksum+1
       elseif status == dht.ERROR_TIMEOUT then
+        print("dht.ERROR_TIMEOUT")
         record_counter.error=record_counter.error+1
       elseif sec_time == 0 then
         print "we could not got rtc time from server"
       end
-
+      
+    uart.alt(1)
     --end)
     return -100,-100
 end
