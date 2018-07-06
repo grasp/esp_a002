@@ -16,7 +16,7 @@ device_state={
  ["ip_addr"]=""
 }
 
---function a002_main()
+function a002_main()
   --init
   gpio_init()
 
@@ -31,7 +31,6 @@ device_state={
        check_ip_body(device_state)
 
     elseif string.len(device_state.ip_addr)==0 then
-
       --will run each at command in that file per this timer
       activate_bearer_body(device_state)
 
@@ -42,12 +41,9 @@ device_state={
       tmr.interval(0,10000)
       --print(temp,humi)
      http_request_body(device_state,temp,humi)
-    --print("I am prepare for http")
-
+        --print("I am prepare for http")
         -- read dht
-
         -- http send data
-
         -- http receive data
     else
 
@@ -55,12 +51,7 @@ device_state={
 
     end
   end)
---end
-
--- activate bear
-
--- check ip
-
+end
 
 
 --a002_main()
